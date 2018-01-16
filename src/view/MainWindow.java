@@ -15,7 +15,7 @@ public class MainWindow {
         // Size the frame.
         frame.pack();
 
-        // Show it.
+        // Show frame.
         frame.setVisible(true);
     }
 }
