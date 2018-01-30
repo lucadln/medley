@@ -1,8 +1,6 @@
 package view;
 
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -11,6 +9,7 @@ import javax.swing.Timer;
 import javax.swing.SwingConstants;
 import java.util.*;
 import java.text.*;
+import java.util.List;
 
 public class MainWindow {
 
@@ -51,16 +50,23 @@ public class MainWindow {
 
         ClockLabel timeLable = new ClockLabel(entranceTimestamp);
 
-        JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame f = new JFrame("Digital Clock");
+        f.setUndecorated(true);
+        f.setAlwaysOnTop(true);
         f.setSize(300,150);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLayout(new GridLayout(1, 1));
+        f.getContentPane().setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
+        f.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
 
         f.add(timeLable);
-
-        f.getContentPane().setBackground(Color.black);
-
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+        int x = (int) rect.getMinX() - f.getWidth();
+        int y = (int) rect.getMaxY() - f.getHeight();
+        f.setLocation(x, y);
+        f.setVisible(true);
         f.setVisible(true);
     }
 }
@@ -72,12 +78,12 @@ class ClockLabel extends JLabel implements ActionListener {
     long entranceTimestamp;
 
     public ClockLabel(long entranceTimestamp) {
-        setForeground(Color.green);
+        setForeground(new Color(198, 198, 198));
         this.entranceTimestamp = entranceTimestamp;
 
         sdf = new SimpleDateFormat("HH:mm:ss");
 
-        setFont(new Font("sans-serif", Font.PLAIN, 40));
+        setFont(new Font("monospaced", Font.PLAIN, 50));
         setHorizontalAlignment(SwingConstants.CENTER);
 
         Timer t = new Timer(1000, this);
