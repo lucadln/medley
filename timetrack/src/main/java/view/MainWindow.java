@@ -1,7 +1,5 @@
 package view;
 
-import model.RequestHandler;
-
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -20,6 +18,7 @@ public class MainWindow {
 
         String cookie = "";
         String response;
+        long entranceTimestamp = 0;
 
         // Login and open the membership page
         RequestHandler requestHandler = new RequestHandler();
@@ -36,10 +35,21 @@ public class MainWindow {
                 }
             }
         }
-
         response = requestHandler.executeGet("http://nra2008:80/nroffice/Pages/Membership/query.aspx", cookie);
 
-        ClockLabel timeLable = new ClockLabel();
+        // Extract the entrance time
+        int timeIndex = response.indexOf("Intrare Receptie Cluj-Napoca") + 81;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String entranceTime = sdf.format(new Date()) + " " + response.substring(timeIndex, timeIndex + 5) + ":00";
+
+        // Convert entranceTime to timestamp
+        try {
+            entranceTimestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(entranceTime).getTime();
+        } catch(Exception e) { //this generic but you can control another types of exception
+            // look the origin of excption
+        }
+
+        ClockLabel timeLable = new ClockLabel(entranceTimestamp);
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame f = new JFrame("Digital Clock");
@@ -58,11 +68,15 @@ public class MainWindow {
 class ClockLabel extends JLabel implements ActionListener {
 
     SimpleDateFormat sdf;
+    String result;
+    long entranceTimestamp;
 
-    public ClockLabel() {
+    public ClockLabel(long entranceTimestamp) {
         setForeground(Color.green);
+        this.entranceTimestamp = entranceTimestamp;
 
         sdf = new SimpleDateFormat("HH:mm:ss");
+
         setFont(new Font("sans-serif", Font.PLAIN, 40));
         setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -71,7 +85,19 @@ class ClockLabel extends JLabel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
-        Date d = new Date();
+        long currentTimestamp = System.currentTimeMillis();
+        long timeSpentMillis = currentTimestamp - entranceTimestamp - 7200000;
+
+        Date d = new Date(timeSpentMillis);
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        String timeSpentString = df.format(d);
+        result = sdf.format(d);
+
+        try {
+            d = new SimpleDateFormat("HH:mm:ss").parse(result);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         setText(sdf.format(d));
     }
 }
