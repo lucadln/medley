@@ -63,7 +63,7 @@ public class MainWindow {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
         Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
-        int x = (int) rect.getMinX() - f.getWidth();
+        int x = (int) ((int) 2 * rect.getMaxX() - f.getWidth());
         int y = (int) rect.getMaxY() - f.getHeight();
         f.setLocation(x, y);
         f.setVisible(true);
