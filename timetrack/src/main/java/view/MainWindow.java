@@ -37,7 +37,7 @@ public class MainWindow {
         response = requestHandler.executeGet("http://nra2008:80/nroffice/Pages/Membership/query.aspx", cookie);
 
         // Extract the entrance time
-        int timeIndex = response.indexOf("Intrare Receptie Cluj-Napoca") + 81;
+        int timeIndex = response.lastIndexOf("Intrare Receptie Cluj-Napoca") + 81;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String entranceTime = sdf.format(new Date()) + " " + response.substring(timeIndex, timeIndex + 5) + ":00";
 
